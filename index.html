@@ -3,675 +3,507 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SCEMVAB — 완전판 (120문항 / 50 Archetypes / PDF / Autosave)</title>
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- html2canvas + jsPDF for PDF export -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+<title>SCEMVAB PPI - 성격검사</title>
 <style>
-:root{
-  --bg:#0b1220; --card:#091025; --muted:#9aa9bf; --accent:#60a5fa;
-  --glass: rgba(255,255,255,0.03);
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:"Noto Sans KR", system-ui, -apple-system, "Segoe UI", Roboto;background:linear-gradient(180deg,#071022 0%, #08182a 100%);color:#e6eef8}
-.container{max-width:1100px;margin:20px auto;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border-radius:12px}
-.header{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.header h1{margin:0;font-size:20px}
-.header .controls{display:flex;gap:8px;align-items:center}
-.btn{background:linear-gradient(90deg,var(--accent),#2563eb);border:none;padding:8px 12px;border-radius:8px;color:#042034;font-weight:700;cursor:pointer}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
-.topbar{margin:12px 0;display:flex;gap:12px;align-items:center}
-.progressOuter{flex:1;background:rgba(255,255,255,0.03);height:14px;border-radius:8px;overflow:hidden}
-.progressInner{height:100%;background:linear-gradient(90deg,var(--accent),#38bdf8);width:0%}
-.infoSmall{font-size:13px;color:var(--muted)}
-.layout{display:grid;grid-template-columns:1fr 380px;gap:18px}
-.left{background:var(--card);padding:12px;border-radius:10px;max-height:72vh;overflow:auto}
-.right{background:var(--glass);padding:12px;border-radius:10px;height:72vh;overflow:auto;position:sticky;top:18px}
-.q{padding:10px;border-radius:8px;margin-bottom:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-.q .text{margin-bottom:6px}
-.scale{display:flex;gap:6px}
-.scale input[type=radio]{display:none}
-.scale label{flex:1;padding:8px;text-align:center;border-radius:6px;background:rgba(255,255,255,0.02);cursor:pointer;color:var(--muted)}
-.scale input[type=radio]:checked + label{background:linear-gradient(90deg,var(--accent),#38bdf8);color:#042034;font-weight:700}
-.small{font-size:13px;color:var(--muted)}
-.archeItem{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.resultHeader{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.resultBox{margin-top:10px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
-.switch{display:flex;align-items:center;gap:6px}
-.note{font-size:13px;color:var(--muted);margin-top:8px}
-.footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
-.warning{color:#ffb86b;font-weight:700}
+  :root{--bg:#0f1724;--card:#0b1220;--accent:#7dd3fc;--muted:#9aa9bf;--glass:rgba(255,255,255,0.04)}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:linear-gradient(180deg,#071022 0%, #08182a 100%);color:#e6eef8}
+  .wrap{max-width:1080px;margin:18px auto;padding:20px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.6);}
+  h1{margin:0 0 6px;font-weight:700}
+  p.lead{margin:0 0 12px;color:var(--muted)}
+  .progress-bar{background:rgba(255,255,255,0.06);height:8px;border-radius:8px;overflow:hidden;margin-bottom:16px}
+  .progress-fill{background:linear-gradient(90deg,var(--accent),#60a5fa);height:100%;width:0%;transition:width 0.3s ease}
+  .grid{display:grid;grid-template-columns:1fr 400px;gap:18px}
+  .questions{background:var(--card);padding:16px;border-radius:10px;max-height:74vh;overflow:auto}
+  .panel{background:var(--glass);padding:12px;border-radius:10px}
+  .q{padding:10px 8px;border-radius:8px;margin-bottom:8px;background:linear-gradient(180deg, rgba(255,255,255,0.008), transparent);transition:background 0.2s}
+  .q.answered{background:linear-gradient(180deg, rgba(125,211,252,0.05), rgba(125,211,252,0.02))}
+  .q .txt{font-size:14px;margin-bottom:6px}
+  .scale{display:flex;gap:6px}
+  .scale input[type=radio]{display:none}
+  .scale label{flex:1;text-align:center;padding:8px 6px;background:transparent;border-radius:6px;border:1px solid rgba(255,255,255,0.03);font-size:13px;cursor:pointer;color:var(--muted);transition:all 0.2s}
+  .scale label:hover{background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.08)}
+  .scale input[type=radio]:checked + label{background:linear-gradient(90deg,var(--accent),#60a5fa);color:#072034;border:1px solid rgba(255,255,255,0.06);font-weight:600;transform:scale(1.05)}
+  .actions{display:flex;gap:8px;margin-top:12px}
+  button{cursor:pointer;padding:10px 12px;border-radius:8px;border:none;background:var(--accent);color:#042034;font-weight:700;transition:all 0.2s}
+  button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(125,211,252,0.3)}
+  button:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+  button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+  button.ghost:hover{background:rgba(255,255,255,0.02)}
+  .result{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+  .bar{height:12px;background:rgba(255,255,255,0.06);border-radius:8px;overflow:hidden;margin:6px 0}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#60a5fa);width:0%;transition:width 0.5s ease}
+  .archetypes{margin-top:10px}
+  .atype{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;animation:fadeIn 0.3s}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+  .small{font-size:13px;color:var(--muted)}
+  .radar{width:100%;height:260px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .footer{margin-top:10px;color:var(--muted);font-size:13px;text-align:center}
+  .status-badge{display:inline-block;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;margin-left:8px}
+  .status-incomplete{background:rgba(239,68,68,0.1);color:#ef4444}
+  .status-complete{background:rgba(34,197,94,0.1);color:#22c55e}
+  @media(max-width:980px){.grid{grid-template-columns:1fr;}.panel{position:sticky;top:12px}}
 </style>
 </head>
 <body>
-<div class="container" id="app">
-  <div class="header">
-    <h1>SCEMVAB — 완전판</h1>
-    <div class="controls">
-      <button class="btn" id="saveBtn">저장(로컬)</button>
-      <button class="btn" id="exportPdf">PDF 저장</button>
-      <button class="btn ghost" id="resetAll">다시하기</button>
-    </div>
+<div class="wrap">
+  <h1>SCEMVAB PPI — 전체 검사 (120문항)</h1>
+  <p class="lead">7차원 성격 프로파일을 정교하게 측정합니다. 각 문항은 1(전혀 아니다)부터 7(매우 그렇다)까지 응답해주세요.</p>
+  
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
   </div>
-
-  <div class="topbar">
-    <div class="progressOuter" title="진행률">
-      <div class="progressInner" id="progressInner"></div>
+  
+  <div class="grid">
+    <div class="questions panel" id="questions">
+      <!-- Questions injected by JS -->
     </div>
-    <div style="width:220px;text-align:right">
-      <div class="infoSmall">응답: <span id="answered">0</span>/120</div>
-      <div class="infoSmall">저장: <span id="savedState">없음</span></div>
-    </div>
-  </div>
 
-  <div class="layout">
-    <div class="left" id="questionsContainer"></div>
-
-    <div class="right">
-      <div class="resultHeader">
-        <div><strong>결과 미검사</strong><div class="small">설문 완료 후 결과가 표시됩니다.</div></div>
-        <div>
-          <label class="switch small"><input type="checkbox" id="toggleInterpret"> 해석 확장</label>
+    <div class="panel" id="side">
+      <div class="result" id="summary">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">검사 진행 중</div>
+            <div class="small">응답률: <span id="answerRate">0%</span></div>
+          </div>
+          <div style="text-align:right">
+            <div class="small">응답/총</div>
+            <div style="font-weight:800;font-size:20px"><span id="answered">0</span>/<span id="totalN">120</span></div>
+          </div>
         </div>
-      </div>
-
-      <div class="resultBox" id="resultOverview" style="display:none">
-        <canvas id="radar" width="320" height="320"></canvas>
-        <div id="topArche" style="margin-top:10px"></div>
-        <div id="interpret" class="note"></div>
+        
         <div style="margin-top:10px">
-          <button class="btn" id="downloadReport">PDF 리포트 생성</button>
+          <div class="small">측정 차원 (0–100)</div>
+          <div id="bars"></div>
+        </div>
+
+        <div class="archetypes" id="archetypes">
+          <div class="small">대표 유형</div>
+        </div>
+
+        <div style="margin-top:10px" class="small">프로파일 레이더</div>
+        <div class="radar" id="radar">
+          <svg id="rad" width="260" height="260" viewBox="-130 -130 260 260"></svg>
+        </div>
+
+        <div class="actions">
+          <button id="show">결과 보기</button>
+          <button class="ghost" id="reset">다시하기</button>
+          <button class="ghost" id="export">결과 저장</button>
         </div>
       </div>
 
-      <div class="resultBox" id="qcBox" style="margin-top:12px">
-        <div><strong>응답 무성의/패턴 검사</strong></div>
-        <div id="qcMsg" class="small">검사 전입니다.</div>
-      </div>
-
-      <div style="margin-top:10px" class="note">
-        <div>기능: 자동저장, 진행률, 응답검사, 상위 10 Archetype, PDF출력, 로컬 데이터 유지.</div>
-        <div style="margin-top:6px">서버 통합(IRT, AI 원격해석, 집단통계)은 별도 구현 필요 (TODO 표기 참조).</div>
-      </div>
+      <div class="footer">© 2025 Synox Studios. All rights reserved.</div>
     </div>
   </div>
-
-  <div class="footer">SCEMVAB © — 프론트엔드 프로토타입. 개인정보는 로컬에만 저장됩니다.</div>
 </div>
 
 <script>
-/* ------------------ 데이터: 120문항 + 50 Archetypes --------------- */
-/* 질문(120) — 앞서 합의한 120문항을 그대로 사용. 각 item에 id, text, dim, reverse(optional) */
-const questions = [
-  {id:1, text:"나는 새로운 사람과 쉽게 친해지는 편이다.", dim:"S"},
-  {id:2, text:"나는 정해진 일정을 철저히 지키려 노력한다.", dim:"C"},
-  {id:3, text:"나는 감정의 변화가 심한 편이다.", dim:"E"},
-  {id:4, text:"나는 목표를 세우면 끝까지 해내는 편이다.", dim:"M"},
-  {id:5, text:"나는 미래를 상상하고 계획하는 것을 즐긴다.", dim:"V"},
-  {id:6, text:"나는 예상치 못한 상황에 빠르게 적응한다.", dim:"A"},
-  {id:7, text:"나는 일과 휴식의 균형을 중요하게 생각한다.", dim:"B"},
-  {id:8, text:"나는 낯선 모임에서 먼저 말을 거는 편이다.", dim:"S"},
-  {id:9, text:"나는 해야 할 일을 미루지 않는다.", dim:"C"},
-  {id:10, text:"나는 감정이 쉽게 상한다.", dim:"E"},
-  {id:11, text:"나는 도전적인 일을 즐긴다.", dim:"M"},
-  {id:12, text:"나는 내가 가고 싶은 인생의 방향이 뚜렷하다.", dim:"V"},
-  {id:13, text:"나는 새로운 환경에서도 금방 익숙해진다.", dim:"A"},
-  {id:14, text:"나는 하루 일정에 여유 시간을 꼭 둔다.", dim:"B"},
-  {id:15, text:"나는 낯선 사람과 대화할 때 긴장한다.", dim:"S", reverse:true},
-  {id:16, text:"나는 실수를 반복하지 않으려 노력한다.", dim:"C"},
-  {id:17, text:"나는 감정에 휩쓸려 결정을 내릴 때가 많다.", dim:"E", reverse:true},
-  {id:18, text:"나는 어려운 일에도 쉽게 포기하지 않는다.", dim:"M"},
-  {id:19, text:"나는 큰 그림을 그리고 그에 맞게 행동한다.", dim:"V"},
-  {id:20, text:"나는 예상치 못한 변화를 불편하게 느낀다.", dim:"A", reverse:true},
-  {id:21, text:"나는 일에 너무 몰입해서 휴식을 놓칠 때가 있다.", dim:"B", reverse:true},
-  {id:22, text:"나는 사람들과 어울리며 에너지를 얻는다.", dim:"S"},
-  {id:23, text:"나는 세부사항까지 꼼꼼히 확인하는 편이다.", dim:"C"},
-  {id:24, text:"나는 스트레스를 받으면 쉽게 짜증이 난다.", dim:"E"},
-  {id:25, text:"나는 명확한 목표가 있어야 동기부여가 된다.", dim:"M"},
-  {id:26, text:"나는 세상에 대한 비전을 품고 행동한다.", dim:"V"},
-  {id:27, text:"나는 새로운 기술이나 방법을 배우는 것을 즐긴다.", dim:"A"},
-  {id:28, text:"나는 일과 개인생활 사이의 균형이 잘 잡혀 있다.", dim:"B"},
-  {id:29, text:"나는 처음 보는 사람에게 말 거는 것이 어렵다.", dim:"S", reverse:true},
-  {id:30, text:"나는 마감기한을 지키지 못하는 일이 거의 없다.", dim:"C"},
-  {id:31, text:"나는 감정을 드러내는 편이다.", dim:"E"},
-  {id:32, text:"나는 내가 정한 목표를 달성하면 큰 만족을 느낀다.", dim:"M"},
-  {id:33, text:"나는 미래를 예측하고 대비하는 것을 좋아한다.", dim:"V"},
-  {id:34, text:"나는 환경 변화에도 쉽게 적응한다.", dim:"A"},
-  {id:35, text:"나는 바쁜 일정 속에서도 휴식을 챙긴다.", dim:"B"},
-  {id:36, text:"나는 다른 사람들과 함께 일할 때 즐겁다.", dim:"S"},
-  {id:37, text:"나는 해야 할 일을 체계적으로 정리한다.", dim:"C"},
-  {id:38, text:"나는 작은 일에도 감정이 크게 흔들린다.", dim:"E", reverse:true},
-  {id:39, text:"나는 새로운 도전을 즐긴다.", dim:"M"},
-  {id:40, text:"나는 내 삶의 방향에 대해 명확히 알고 있다.", dim:"V"},
-  {id:41, text:"나는 새로운 환경에 금방 익숙해진다.", dim:"A"},
-  {id:42, text:"나는 하루의 피로를 느끼면 반드시 쉬어야 한다고 생각한다.", dim:"B"},
-  {id:43, text:"나는 사람들과의 관계를 쉽게 이어간다.", dim:"S"},
-  {id:44, text:"나는 업무를 철저히 계획한 후 실행한다.", dim:"C"},
-  {id:45, text:"나는 감정적 상황에서도 침착하게 행동한다.", dim:"E"},
-  {id:46, text:"나는 목표를 위해 노력하는 과정이 즐겁다.", dim:"M"},
-  {id:47, text:"나는 장기적인 비전을 세우는 것을 좋아한다.", dim:"V"},
-  {id:48, text:"나는 새로운 아이디어를 현실에 적용하는 편이다.", dim:"A"},
-  {id:49, text:"나는 지나치게 바쁘면 삶의 균형이 깨진다고 느낀다.", dim:"B", reverse:true},
-  {id:50, text:"나는 사람들과의 교류가 나를 성장시킨다고 느낀다.", dim:"S"},
-  {id:51, text:"나는 실수를 하면 원인을 찾아 개선하려 한다.", dim:"C"},
-  {id:52, text:"나는 감정이 겉으로 잘 드러나지 않는다.", dim:"E"},
-  {id:53, text:"나는 힘든 목표일수록 도전 의식이 생긴다.", dim:"M"},
-  {id:54, text:"나는 미래의 가능성을 상상하며 행동한다.", dim:"V"},
-  {id:55, text:"나는 예상치 못한 일에도 침착하게 대처한다.", dim:"A"},
-  {id:56, text:"나는 일과 인간관계의 균형이 중요하다고 생각한다.", dim:"B"},
-  {id:57, text:"나는 새로운 친구를 사귀는 것이 어렵지 않다.", dim:"S"},
-  {id:58, text:"나는 일할 때 우선순위를 명확히 세운다.", dim:"C"},
-  {id:59, text:"나는 감정의 기복이 거의 없다.", dim:"E"},
-  {id:60, text:"나는 포기하지 않고 계속 도전한다.", dim:"M"},
-  {id:61, text:"나는 먼 미래를 생각하며 지금의 결정을 내린다.", dim:"V"},
-  {id:62, text:"나는 갑작스러운 일정 변경에도 잘 적응한다.", dim:"A"},
-  {id:63, text:"나는 지나치게 바쁘면 효율이 떨어진다.", dim:"B", reverse:true},
-  {id:64, text:"나는 모임이나 행사에서 중심이 되는 편이다.", dim:"S"},
-  {id:65, text:"나는 계획 없이 일을 시작하지 않는다.", dim:"C"},
-  {id:66, text:"나는 감정적 자극에 쉽게 반응한다.", dim:"E"},
-  {id:67, text:"나는 어려운 과제일수록 열정이 생긴다.", dim:"M"},
-  {id:68, text:"나는 나만의 인생 철학이 있다.", dim:"V"},
-  {id:69, text:"나는 새로운 환경에서도 긴장하지 않는다.", dim:"A"},
-  {id:70, text:"나는 일보다 삶의 질이 더 중요하다고 생각한다.", dim:"B"},
-  {id:71, text:"나는 다른 사람의 감정에 민감하게 반응한다.", dim:"E"},
-  {id:72, text:"나는 다른 사람과 쉽게 협력할 수 있다.", dim:"S"},
-  {id:73, text:"나는 일정이 틀어지면 스트레스를 받는다.", dim:"C", reverse:true},
-  {id:74, text:"나는 불확실한 상황에서도 동기부여를 잃지 않는다.", dim:"M"},
-  {id:75, text:"나는 큰 목표를 세워야 행동할 힘이 생긴다.", dim:"V"},
-  {id:76, text:"나는 새로운 환경에서 금방 익숙해지는 편이다.", dim:"A"},
-  {id:77, text:"나는 일과 인간관계의 균형을 맞추려고 한다.", dim:"B"},
-  {id:78, text:"나는 사교적이고 활발한 편이다.", dim:"S"},
-  {id:79, text:"나는 실수를 두려워하지 않는다.", dim:"C"},
-  {id:80, text:"나는 감정이 쉽게 흔들리지 않는다.", dim:"E"},
-  {id:81, text:"나는 어려운 일을 해낼 때 큰 보람을 느낀다.", dim:"M"},
-  {id:82, text:"나는 비전을 행동으로 옮기려 노력한다.", dim:"V"},
-  {id:83, text:"나는 변화를 기회로 생각한다.", dim:"A"},
-  {id:84, text:"나는 여유 있는 삶을 추구한다.", dim:"B"},
-  {id:85, text:"나는 새로운 사람과 대화하는 것을 즐긴다.", dim:"S"},
-  {id:86, text:"나는 책임감 있게 행동한다.", dim:"C"},
-  {id:87, text:"나는 감정적으로 행동하는 것을 자제한다.", dim:"E"},
-  {id:88, text:"나는 어려운 목표일수록 동기부여가 된다.", dim:"M"},
-  {id:89, text:"나는 내 인생의 방향을 스스로 설계한다.", dim:"V"},
-  {id:90, text:"나는 환경 변화에 빠르게 대처한다.", dim:"A"},
-  {id:91, text:"나는 바쁜 일정 속에서도 균형을 잃지 않으려 한다.", dim:"B"},
-  {id:92, text:"나는 다른 사람의 감정에 공감하는 편이다.", dim:"E"},
-  {id:93, text:"나는 협력보다는 혼자 일하는 걸 선호한다.", dim:"S", reverse:true},
-  {id:94, text:"나는 계획을 세우고 이를 꾸준히 따른다.", dim:"C"},
-  {id:95, text:"나는 어려움이 닥쳐도 냉정하게 대처한다.", dim:"E"},
-  {id:96, text:"나는 도전적인 일을 두려워하지 않는다.", dim:"M"},
-  {id:97, text:"나는 내 비전을 다른 사람과 공유하기 좋아한다.", dim:"V"},
-  {id:98, text:"나는 환경 변화에 긍정적으로 대응한다.", dim:"A"},
-  {id:99, text:"나는 일과 여가의 조화가 중요하다고 느낀다.", dim:"B"},
-  {id:100, text:"나는 사람들과의 네트워크를 소중히 여긴다.", dim:"S"},
-  {id:101, text:"나는 일의 세부사항까지 완벽하게 관리하려 한다.", dim:"C"},
-  {id:102, text:"나는 감정이 행동에 영향을 주지 않도록 조절한다.", dim:"E"},
-  {id:103, text:"나는 실패해도 쉽게 포기하지 않는다.", dim:"M"},
-  {id:104, text:"나는 먼 미래를 내다보며 결정을 내린다.", dim:"V"},
-  {id:105, text:"나는 새로운 환경에서도 두려움 없이 행동한다.", dim:"A"},
-  {id:106, text:"나는 스스로의 에너지를 조절하는 법을 안다.", dim:"B"},
-  {id:107, text:"나는 새로운 인간관계를 형성하는 것을 즐긴다.", dim:"S"},
-  {id:108, text:"나는 목표를 세우면 구체적인 계획을 만든다.", dim:"C"},
-  {id:109, text:"나는 감정적 상황에서도 논리적으로 판단한다.", dim:"E"},
-  {id:110, text:"나는 실패를 성장의 기회로 본다.", dim:"M"},
-  {id:111, text:"나는 이상보다는 현실적인 목표를 세운다.", dim:"V"},
-  {id:112, text:"나는 변화하는 환경에서 새로운 가능성을 찾는다.", dim:"A"},
-  {id:113, text:"나는 지나친 일 중심의 생활은 피하려 한다.", dim:"B"},
-  {id:114, text:"나는 사람들과 함께 있는 시간이 즐겁다.", dim:"S"},
-  {id:115, text:"나는 맡은 일을 끝까지 책임진다.", dim:"C"},
-  {id:116, text:"나는 감정에 휩쓸리지 않으려 노력한다.", dim:"E"},
-  {id:117, text:"나는 나 자신을 발전시키려는 욕구가 강하다.", dim:"M"},
-  {id:118, text:"나는 내 비전을 실현하기 위한 계획을 세운다.", dim:"V"},
-  {id:119, text:"나는 어떤 변화에도 유연하게 대응한다.", dim:"A"},
-  {id:120, text:"나는 정신적 안정과 휴식을 중요하게 여긴다.", dim:"B"}
-];
+const axes = ["E","C","S","M","V","A","B"];
+const axisNames = {
+  E: "감정성 (Emotionality)",
+  C: "인지력 (Cognition)",
+  S: "사회성 (Sociability)",
+  M: "관리력 (Management)",
+  V: "동기력 (Volition)",
+  A: "적응력 (Adaptability)",
+  B: "자율성 (Balance)"
+};
 
-/* Archetypes(50) — id, desc, v:[E,C,S,M,V,A,B] (note: order corresponds to dims in computeDistance)
-   We'll use vector order [S,C,E,M,V,A,B] for consistency with dims variable below.
-*/
+const axisCounts = [18,17,17,17,17,17,17];
+
+const basePrompts = {
+  E: [
+    "사소한 일에도 감정이 쉽게 흔들린다.",
+    "감정이 얼굴에 잘 드러나는 편이다.",
+    "누군가에게 상처받으면 오래 잊지 못한다.",
+    "기분이 자주 오르락내리락한다.",
+    "힘든 일이 있어도 감정을 잘 다스린다.",
+    "다른 사람의 말에 쉽게 기분이 상한다.",
+    "감정이 폭발하면 후회하는 경우가 많다.",
+    "감정 표현을 억제하는 편이다.",
+    "작은 일에도 기분이 좋아지거나 나빠진다.",
+    "스트레스를 받으면 감정이 불안정해진다.",
+    "다른 사람의 감정 변화에 쉽게 공감한다.",
+    "내 감정을 객관적으로 바라보는 편이다.",
+    "예상치 못한 일에 놀라거나 당황하기 쉽다.",
+    "감정을 표현하지 않고 속으로 삭인다.",
+    "감정이 내 판단에 영향을 주는 경우가 많다.",
+    "기분 변화가 심해도 금방 회복된다.",
+    "감정적인 순간이 많지만 후회는 적다.",
+    "감정에 솔직한 편이다."
+  ],
+  C: [
+    "문제를 체계적으로 분석하려 한다.",
+    "논리보다는 감으로 판단한다.",
+    "자료를 찾아 근거를 확인하는 편이다.",
+    "새로운 개념을 이해하는 데 흥미를 느낀다.",
+    "직관적으로 결정을 내리는 편이다.",
+    "복잡한 문제일수록 더 끈기 있게 접근한다.",
+    "여러 가능성을 계산해 행동한다.",
+    "즉흥적으로 결론을 내리곤 한다.",
+    "생각을 정리하는 것을 즐긴다.",
+    "논리보다는 사람의 감정을 우선시한다.",
+    "아이디어를 구조적으로 발전시킨다.",
+    "비합리적인 판단을 피하려 노력한다.",
+    "창의적인 아이디어보다 검증된 방법을 선호한다.",
+    "복잡한 개념도 빠르게 이해한다.",
+    "감정보다는 사실을 중시한다.",
+    "분석보다 직관이 더 믿을 만하다고 느낀다.",
+    "생각을 정리하기 위해 기록을 자주 한다."
+  ],
+  S: [
+    "낯선 사람과 쉽게 대화할 수 있다.",
+    "혼자 있는 게 가장 편하다.",
+    "사람들과 어울릴 때 에너지가 생긴다.",
+    "감정적으로 공감하는 편이다.",
+    "대화보다는 혼자 생각하는 걸 선호한다.",
+    "갈등을 피하려 노력한다.",
+    "다른 사람을 도와줄 때 보람을 느낀다.",
+    "타인의 평가에 크게 신경 쓰지 않는다.",
+    "모임에서 분위기를 주도하는 편이다.",
+    "상대방의 감정에 둔감하다는 말을 들은 적 있다.",
+    "친구의 고민을 잘 들어주는 편이다.",
+    "혼자 있는 시간이 꼭 필요하다.",
+    "다른 사람의 기분 변화를 잘 감지한다.",
+    "낯선 환경에서 쉽게 적응하지 못한다.",
+    "주변 사람과 함께할 때 안정감을 느낀다.",
+    "인간관계가 내 삶에서 중요한 부분을 차지한다.",
+    "사람들과 함께 있을 때 불편함을 느낀다."
+  ],
+  M: [
+    "해야 할 일을 미루지 않는다.",
+    "계획을 세우고 그대로 실행한다.",
+    "마감일이 다가와야 일을 시작한다.",
+    "해야 할 일 목록을 자주 만든다.",
+    "즉흥적으로 움직이는 편이다.",
+    "하루를 계획적으로 보내려 노력한다.",
+    "일이 완벽해야 마음이 편하다.",
+    "계획보다는 그때그때 상황에 맞춰 움직인다.",
+    "실수를 반복하지 않으려 노력한다.",
+    "일의 우선순위를 잘 정한다.",
+    "정해진 규칙을 지키는 것을 중요하게 생각한다.",
+    "작은 일이라도 끝까지 완수하려 한다.",
+    "체계적인 방법으로 문제를 해결한다.",
+    "충동적으로 결정하는 편이다.",
+    "해야 할 일을 미루면 불안하다.",
+    "규칙적인 생활을 유지하려 노력한다.",
+    "주어진 일을 끝내지 않고 넘어가는 경우가 많다."
+  ],
+  V: [
+    "나만의 목표가 분명하다.",
+    "꿈보다는 현실적인 선택을 중시한다.",
+    "목표를 위해 노력하는 것을 즐긴다.",
+    "무언가에 몰두할 때 시간이 빨리 간다.",
+    "특별한 이유 없이 노력하기 어렵다.",
+    "성공에 대한 열망이 크다.",
+    "하고 싶은 일을 위해 희생할 수 있다.",
+    "현재의 편안함이 가장 중요하다.",
+    "목표를 이루면 다음 목표를 세운다.",
+    "일시적인 유혹에 쉽게 흔들린다.",
+    "내가 원하는 것이 무엇인지 잘 안다.",
+    "남들이 정한 길보다 내 길을 가고 싶다.",
+    "결과보다는 과정에 집중한다.",
+    "도전적인 일을 좋아한다.",
+    "실패를 두려워하지 않는다.",
+    "계획이 틀어지면 쉽게 의욕을 잃는다.",
+    "목표를 향해 꾸준히 나아간다."
+  ],
+  A: [
+    "새로운 아이디어를 떠올리는 게 즐겁다.",
+    "남들이 생각하지 못한 방법을 자주 떠올린다.",
+    "정해진 틀 안에서 일하는 게 편하다.",
+    "색다른 시도를 좋아한다.",
+    "변화보다는 안정이 좋다.",
+    "창의적인 활동을 좋아한다.",
+    "문제를 해결하는 새로운 방식을 찾는다.",
+    "새로운 환경에 잘 적응한다.",
+    "남들과 다른 시각으로 세상을 본다.",
+    "규칙이 많은 환경은 답답하다.",
+    "상상하는 걸 즐긴다.",
+    "일상적인 일은 금방 질린다.",
+    "새로운 것을 배우는 게 재미있다.",
+    "변화를 두려워하지 않는다.",
+    "남들이 하지 않는 일을 해보고 싶다.",
+    "새로운 방법을 시도하는 걸 주저하지 않는다.",
+    "반복되는 일에는 흥미를 잃는다."
+  ],
+  B: [
+    "자신의 생각을 솔직하게 표현한다.",
+    "다른 사람의 의견에 쉽게 휘둘린다.",
+    "자신의 주장을 분명히 말한다.",
+    "비판을 받으면 위축된다.",
+    "상황이 불공평하면 바로 지적한다.",
+    "다른 사람에게 쉽게 의존한다.",
+    "리더 역할을 맡는 것을 좋아한다.",
+    "결정을 내릴 때 주저한다.",
+    "자신의 선택에 책임을 진다.",
+    "타인의 눈치를 많이 본다.",
+    "하고 싶은 말을 망설이지 않는다.",
+    "다른 사람의 부탁을 거절하지 못한다.",
+    "스스로 문제를 해결하려 한다.",
+    "남의 의견에 반대하는 게 어렵다.",
+    "필요하면 단호하게 행동한다.",
+    "타인의 시선을 크게 신경 쓰지 않는다.",
+    "리더십을 발휘하는 걸 즐긴다."
+  ]
+};
+
+const items = [];
+for(let ax=0; ax<7; ax++){
+  const key = axes[ax];
+  const count = axisCounts[ax];
+  const templates = basePrompts[key];
+  for(let i=0;i<count;i++){
+    const base = templates[i % templates.length];
+    items.push({ t: base, a: ax });
+  }
+}
+
 const archetypes = [
-  {id:"Orion", desc:"분석가형", v:[30,88,25,72,50,68,28]},
-  {id:"Vesta", desc:"창조적 열정가", v:[80,88,85,82,90,88,82]},
-  {id:"Nereid", desc:"감정 공감가", v:[90,60,82,50,72,60,64]},
-  {id:"Atlas", desc:"안정적 관리자", v:[80,82,18,78,30,22,20]},
-  {id:"Hermes", desc:"탐험가", v:[70,75,50,76,80,88,72]},
-  {id:"Selene", desc:"사색가", v:[30,84,78,48,72,56,75]},
+  {id:"Orion", desc:"분석가형", v:[25,88,30,72,50,68,28]},
+  {id:"Vesta", desc:"창조적 열정가", v:[85,88,80,82,90,88,82]},
+  {id:"Nereid", desc:"감정 공감가", v:[82,60,90,50,72,60,64]},
+  {id:"Atlas", desc:"안정적 관리자", v:[18,82,80,78,30,22,20]},
+  {id:"Hermes", desc:"탐험가", v:[50,75,70,76,80,88,72]},
+  {id:"Selene", desc:"사색가", v:[78,84,30,48,72,56,75]},
   {id:"Ares", desc:"결단가", v:[20,85,20,92,28,52,36]},
-  {id:"Gaia", desc:"조화형 조정자", v:[86,60,50,60,58,78,58]},
-  {id:"Helios", desc:"혁신 리더", v:[82,90,88,88,92,90,86]},
-  {id:"Nyx", desc:"신비적 내면형", v:[22,78,82,40,86,30,80]},
-  {id:"Chiron", desc:"치유자", v:[92,72,86,56,74,72,60]},
-  {id:"Themis", desc:"질서 철학가", v:[48,86,22,74,24,22,28]},
-  {id:"Aurora", desc:"창의적 사색가", v:[40,72,88,60,88,62,70]},
-  {id:"Boreas", desc:"전략적 계획자", v:[38,92,30,80,40,50,30]},
-  {id:"Calypso", desc:"감정 표현가", v:[88,60,82,50,68,60,65]},
-  {id:"Dion", desc:"모험가", v:[68,70,60,78,80,82,70]},
-  {id:"Eos", desc:"목표 지향 사색가", v:[30,88,50,90,70,62,50]},
-  {id:"Fauna", desc:"친화적 조정자", v:[90,60,70,60,60,78,55]},
-  {id:"Galen", desc:"논리적 분석가", v:[30,92,20,70,40,50,35]},
-  {id:"Hestia", desc:"안정적 감정 조절자", v:[88,80,30,50,50,40,25]},
-  {id:"Icarus", desc:"혁신적 도전가", v:[60,78,88,88,90,85,75]},
-  {id:"Juno", desc:"사회적 지도자", v:[90,75,50,78,70,80,60]},
-  {id:"Kronos", desc:"계획적 전략가", v:[40,90,20,92,50,55,40]},
-  {id:"Lyra", desc:"예술적 감정가", v:[82,65,90,60,88,72,80]},
-  {id:"Morpheus", desc:"내향적 사색가", v:[20,80,78,50,70,55,75]},
-  {id:"Nox", desc:"신비적 관찰자", v:[30,78,80,48,86,40,80]},
-  {id:"Orionis", desc:"분석적 탐험가", v:[50,88,40,80,60,70,50]},
-  {id:"Phoebe", desc:"감성적 창조자", v:[88,60,82,50,82,60,65]},
-  {id:"Quirinus", desc:"결단적 실행자", v:[25,85,22,92,28,55,40]},
-  {id:"Rhea", desc:"균형 조정자", v:[88,65,50,60,60,78,55]},
-  {id:"Selene2", desc:"사색적 치유자", v:[40,84,78,56,72,62,75]},
-  {id:"Thalassa", desc:"감정 공감+탐험", v:[90,68,82,60,74,70,65]},
-  {id:"Ulysses", desc:"전략적 탐험가", v:[50,88,40,88,70,75,55]},
-  {id:"Vesper", desc:"창의적 사색가2", v:[38,72,88,60,88,62,70]},
-  {id:"Wren", desc:"친화적 협력가", v:[90,60,70,60,60,78,55]},
-  {id:"Xanthe", desc:"예술적 내향형", v:[40,70,88,60,86,62,72]},
-  {id:"Ymir", desc:"강인한 안정형", v:[80,82,30,78,40,50,35]},
-  {id:"Zephyr", desc:"자유로운 탐험가", v:[70,70,60,80,82,85,70]},
-  {id:"Aether", desc:"내향적 창조가", v:[30,82,78,60,78,60,72]},
-  {id:"Borealis", desc:"혁신적 전략가", v:[50,90,88,88,92,88,80]},
-  {id:"Calliope", desc:"예술적 감정 표현가", v:[82,65,90,60,88,72,80]},
-  {id:"Daedalus", desc:"창의적 설계자", v:[40,88,88,88,92,85,78]},
-  {id:"Euryale", desc:"감정+분석형", v:[85,75,80,60,80,70,65]},
-  {id:"Fortuna", desc:"운용적 조정자", v:[88,68,50,60,62,78,58]},
-  {id:"Galatea", desc:"친화적 사색가", v:[90,60,50,60,60,78,55]},
-  {id:"Hyperion", desc:"결단+혁신형", v:[35,88,20,92,28,72,50]},
-  {id:"Io", desc:"탐험적 창조형", v:[60,72,85,80,90,78,70]},
-  {id:"Jormungand", desc:"강인한 전략가", v:[40,92,25,88,40,55,35]},
-  {id:"Klytemnestra", desc:"사회적 지도자", v:[90,75,50,78,70,80,60]},
-  {id:"Leto", desc:"사색적 조정자", v:[40,84,78,60,72,62,75]}
+  {id:"Gaia", desc:"조화형 조정자", v:[50,60,86,60,58,78,58]},
+  {id:"Helios", desc:"혁신 리더", v:[88,90,82,88,92,90,86]},
+  {id:"Nyx", desc:"신비적 내면형", v:[82,78,22,40,86,30,80]}
 ];
-// dims order we'll use: S,C,E,M,V,A,B
-const dims = ["S","C","E","M","V","A","B"];
 
-/* ------------------ UI 생성 ------------------ */
-const qcMsg = document.getElementById('qcMsg');
-const container = document.getElementById('questionsContainer');
-const progressEl = document.getElementById('progressInner');
-const answeredEl = document.getElementById('answered');
-const savedStateEl = document.getElementById('savedState');
-const resultOverview = document.getElementById('resultOverview');
-const topArche = document.getElementById('topArche');
-const interpretEl = document.getElementById('interpret');
-
-function buildQuestions(){
-  container.innerHTML = '';
-  // shuffle questions to reduce order bias
-  const pool = questions.slice();
-  // simple stable shuffle using Fisher-Yates with seed from localStorage if exists
-  for(let i=0;i<pool.length;i++){
-    const q = pool[i];
-    const div = document.createElement('div');
-    div.className='q';
-    div.innerHTML = `<div class="text"><strong>${q.id}.</strong> ${q.text}${q.reverse? ' <span class="small"> (역문항)</span>':''}</div>
-      <div class="scale">${[1,2,3,4,5,6,7].map(n=>`<input type="radio" name="q${q.id}" id="q${q.id}_${n}" value="${n}"><label for="q${q.id}_${n}">${n}</label>`).join('')}</div>`;
-    container.appendChild(div);
+const qpanel = document.getElementById('questions');
+items.forEach((it, idx) => {
+  const el = document.createElement('div');
+  el.className='q';
+  el.dataset.idx = idx;
+  let radios = '';
+  for(let n=1;n<=7;n++){
+    radios += `<input type="radio" id="q${idx}_r${n}" name="q${idx}" value="${n}"><label for="q${idx}_r${n}">${n}</label>`;
   }
-}
-buildQuestions();
-
-/* Load saved state if exists */
-function loadState(){
-  const s = localStorage.getItem('scemvab_answers_v1');
-  if(!s) { savedStateEl.textContent='없음'; return; }
-  try{
-    const obj = JSON.parse(s);
-    if(obj && obj.answers){
-      Object.entries(obj.answers).forEach(([k,v])=>{
-        const sel = document.querySelector(`input[name=${k}][value="${v}"]`);
-        if(sel) sel.checked=true;
-      });
-      savedStateEl.textContent = '로컬 존재';
-      updateProgress();
-    }
-  }catch(e){ console.warn(e); savedStateEl.textContent='읽기오류'; }
-}
-loadState();
-
-/* Autosave every 7s + on change */
-let autosaveTimer = null;
-function autoSave(){
-  const answers = {};
-  questions.forEach(q=>{
-    const sel = document.querySelector(`input[name=q${q.id}]:checked`);
-    if(sel) answers[`q${q.id}`] = sel.value;
-  });
-  const payload = {answers, ts: Date.now()};
-  localStorage.setItem('scemvab_answers_v1', JSON.stringify(payload));
-  savedStateEl.textContent = '로컬에 저장됨';
-}
-document.addEventListener('change', ()=>{
-  updateProgress();
-  window.clearTimeout(autosaveTimer);
-  autosaveTimer = setTimeout(autoSave, 2000);
+  el.innerHTML = `<div class="txt"><strong>Q${idx+1}.</strong> ${it.t}</div>
+    <div class="scale">${radios}</div>`;
+  qpanel.appendChild(el);
 });
 
-/* manual save */
-document.getElementById('saveBtn').addEventListener('click', ()=>{
-  autoSave();
-  alert('로컬에 저장되었습니다.');
+const bars = document.getElementById('bars');
+axes.forEach(ax => {
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `<div style="display:flex;justify-content:space-between"><div style="font-weight:700">${ax} <span class="small">${axisNames[ax]}</span></div><div class="small" id="lbl_${ax}">-</div></div>
+  <div class="bar"><i id="bar_${ax}"></i></div>`;
+  bars.appendChild(wrap);
 });
 
-/* reset */
-document.getElementById('resetAll').addEventListener('click', ()=>{
-  if(!confirm('검사를 초기화하고 저장된 응답을 삭제하시겠습니까?')) return;
-  // clear radios
-  questions.forEach(q=>{
-    const radios = document.getElementsByName(`q${q.id}`);
-    radios.forEach(r=>r.checked=false);
-  });
-  localStorage.removeItem('scemvab_answers_v1');
-  savedStateEl.textContent='없음';
-  updateProgress();
-});
-
-/* progress */
 function updateProgress(){
-  let answered = 0;
-  questions.forEach(q=>{
-    const sel = document.querySelector(`input[name=q${q.id}]:checked`);
-    if(sel) answered++;
+  const answers = readAnswers();
+  const count = answers.filter(v => v !== null).length;
+  const pct = Math.round(count/items.length*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('answered').textContent = count;
+  document.getElementById('answerRate').textContent = pct+'%';
+  
+  document.querySelectorAll('.q').forEach((el, i) => {
+    if(answers[i] !== null) {
+      el.classList.add('answered');
+    } else {
+      el.classList.remove('answered');
+    }
   });
-  answeredEl.textContent = answered;
-  const pct = Math.round(answered / questions.length * 100);
-  progressEl.style.width = pct + '%';
 }
 
-/* QC: detect response patterns (low variance, same answer repeated) */
-function qcCheck(){
-  const vals = [];
-  questions.forEach(q=>{
-    const sel = document.querySelector(`input[name=q${q.id}]:checked`);
-    vals.push(sel? Number(sel.value) : null);
-  });
-  // if many nulls -> N/A
-  const filled = vals.filter(v=>v!==null);
-  if(filled.length < questions.length*0.8){
-    qcMsg.innerText = `미응답 ${questions.length - filled.length}문항 존재 — 모두 응답해주세요.`;
-    return false;
+qpanel.addEventListener('change', updateProgress);
+
+function readAnswers(){
+  const answers = [];
+  for(let i=0;i<items.length;i++){
+    const radios = document.getElementsByName('q'+i);
+    let val = null;
+    for(const r of radios){ if(r.checked){ val = Number(r.value); break; } }
+    answers.push(val);
   }
-  // low variance -> suspicious
-  const mean = filled.reduce((a,b)=>a+b,0)/filled.length;
-  const variance = filled.reduce((a,b)=>a+(b-mean)*(b-mean),0)/filled.length;
-  if(variance < 0.5){
-    qcMsg.innerText = '응답 분산이 매우 낮습니다. 무성의 응답일 가능성이 있습니다.';
-    qcMsg.className='small warning';
-    return true; // still allow
-  }
-  qcMsg.innerText = '응답 품질: 정상';
-  qcMsg.className='small';
-  return true;
+  return answers;
 }
 
-/* compute profile (mean per dim, on 1..7 scale). Handle reverse-coded items */
-function computeProfile(){
-  const scores = {S:[],C:[],E:[],M:[],V:[],A:[],B:[]};
-  questions.forEach(q=>{
-    const sel = document.querySelector(`input[name=q${q.id}]:checked`);
-    let v = sel? Number(sel.value) : null;
-    if(v===null) v = 4; // neutral fill
-    if(q.reverse) v = 8 - v;
-    scores[q.dim].push(v);
+function computeProfile(answers){
+  const mapVal = v => (v===null ? null : Math.round((v-1)/6*100));
+  const sums = new Array(7).fill(0);
+  const counts = new Array(7).fill(0);
+  answers.forEach((ans, i) => {
+    const ax = items[i].a;
+    const v = mapVal(ans);
+    if(v!==null){ sums[ax]+=v; counts[ax]++; }
   });
-  const profile = {};
-  dims.forEach(d=>{
-    const arr = scores[d];
-    const mean = Math.round((arr.reduce((a,b)=>a+b,0)/arr.length) * 100) / 100; // keep decimals
-    profile[d] = mean;
-  });
+  const profile = sums.map((s, i) => counts[i]?Math.round(s/counts[i]):50);
   return profile;
 }
 
-/* Mahalanobis-like distance: simple approach using axis stddev assumptions
-   For accuracy you'd compute covariance matrix from large sample.
-   Here we assume stddev = 1.6 (approx) on scale 1..7 ~ so variance ~2.56.
-   We'll compute distance = sqrt( sum((p_i - a_i_scaled)^2 / var) )
-   But archetypes v vectors are defined on 0..100 or 0..100? In our archetypes we used 0..100-ish scales.
-   To unify: profile is 1..7. Convert profile to 0..100: (val-1)/6*100
-*/
-function toPercentScale(val){ return (val-1)/6*100; }
-
-function computeDistances(profilePercent){
-  // compute distances to each archetype vector using Mahalanobis approx
-  const varApprox = 225; // chosen (15^2) — matches earlier design; you can tune this
-  const results = archetypes.map(a=>{
+function showProfile(profile){
+  axes.forEach((ax,i)=>{
+    document.getElementById('lbl_'+ax).textContent = profile[i] + " /100";
+    document.getElementById('bar_'+ax).style.width = profile[i]+'%';
+  });
+  
+  const dists = archetypes.map(a => {
     let s=0;
-    for(let i=0;i<dims.length;i++){
-      const d = dims[i];
-      const p = profilePercent[d];
-      const av = a.v[i];
-      const diff = p - av;
-      s += (diff*diff)/varApprox;
-    }
-    const dist = Math.sqrt(s);
-    return {...a, dist};
+    for(let i=0;i<7;i++){ const diff = profile[i]-a.v[i]; s += diff*diff; }
+    return Math.sqrt(s);
   });
-  // convert to similarity% : smaller dist -> higher similarity
-  const maxd = Math.max(...results.map(r=>r.dist));
-  const minD = Math.min(...results.map(r=>r.dist));
-  const simRaw = results.map(r => (maxd - r.dist));
+  const maxd = Math.max(...dists);
+  const simRaw = dists.map(d => Math.max(0, (maxd - d)));
   const sumSim = simRaw.reduce((a,b)=>a+b,0) || 1;
-  results.forEach((r,i)=>{
-    r.sim = Math.round(simRaw[i]/sumSim*100);
-    if(r.sim < 0) r.sim = 0;
-  });
-  // normalize to sum 100 if needed
-  let total = results.reduce((a,b)=>a+b.sim,0);
-  if(total !== 100 && results.length){
-    results[0].sim += (100 - total);
+  const sims = simRaw.map(s => Math.round(s/sumSim*100));
+  
+  let total = sims.reduce((a,b)=>a+b,0);
+  if(total !== 100){
+    const diff = 100 - total;
+    sims[0] += diff;
   }
-  results.sort((a,b)=>a.dist - b.dist);
-  return results;
-}
 
-/* generate radar chart */
-let radarChart = null;
-function drawRadar(profile){
-  const ctx = document.getElementById('radar').getContext('2d');
-  const data = [profile.S, profile.C, profile.E, profile.M, profile.V, profile.A, profile.B];
-  if(radarChart) radarChart.destroy();
-  radarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels: ['Sociality','Conscientiousness','Emotionality','Motivation','Vision','Adaptability','Balance'],
-      datasets: [{
-        label: 'SCEMVAB (1–7)',
-        data,
-        backgroundColor: 'rgba(56,189,248,0.18)',
-        borderColor: '#38bdf8',
-        pointBackgroundColor: '#fff'
-      }]
-    },
-    options: {
-      scales: {
-        r: {min:1,max:7,ticks:{stepSize:1,color:'#9aa9bf'},grid:{color:'rgba(255,255,255,0.06)'}}
-      },
-      plugins:{legend:{display:false}}
-    }
+  const archDiv = document.getElementById('archetypes');
+  archDiv.innerHTML = '<div class="small">대표 유형</div>';
+  const paired = archetypes.map((a,i)=>({id:a.id,desc:a.desc,score:sims[i],d:dists[i]}))
+    .sort((x,y)=>y.score - x.score);
+  paired.slice(0,3).forEach(p=>{
+    const el = document.createElement('div');
+    el.className='atype';
+    el.innerHTML = `<div><strong>${p.id}</strong><div class="small">${p.desc}</div></div><div style="text-align:right"><div style="font-weight:800">${p.score}%</div></div>`;
+    archDiv.appendChild(el);
   });
-}
 
-/* Interpretative text generator (template-based) */
-function generateInterpretation(profile){
-  // profile is 1..7 numeric
-  // pick dominant dims (top 3)
-  const arr = Object.entries(profile).map(([k,v])=>({k,v})).sort((a,b)=>b.v - a.v);
-  const top = arr.slice(0,3);
-  const lines = [];
-  // brief summary
-  lines.push(`당신의 상위 성향: ${top.map(t=>t.k).join(', ')} (순서대로).`);
-  // per-dim short notes
-  const dimNotes = {
-    S: ["사교적이고 타인과의 교류에서 에너지를 얻습니다.","사교적 활동보다 개인 시간을 선호합니다."],
-    C: ["계획적이고 책임감 있게 행동하는 편입니다.","세부 관리에 주의를 기울일 필요가 있습니다."],
-    E: ["감정이 풍부하고 공감 능력이 높습니다.","감정 기복이 있을 수 있으니 관리가 필요합니다."],
-    M: ["목표 지향적이며 도전적 과제를 즐깁니다.","동기 유지 전략(작은 보상 등)을 고려하세요."],
-    V: ["장기적 비전과 목표 설정을 선호합니다.","비전과 현실 사이의 균형을 점검하세요."],
-    A: ["새로운 환경에 빠르게 적응하는 편입니다.","너무 많은 변화는 피로를 유발할 수 있습니다."],
-    B: ["일과 삶의 균형을 중요하게 생각합니다.","휴식 루틴을 유지하면 생산성이 올라갑니다."]
-  };
-  dims.forEach(d=>{
-    const v = profile[d];
-    const note = v >= 5 ? dimNotes[d][0] : dimNotes[d][1] || '';
-    lines.push(`${d}: ${Math.round(v*100)/100} — ${note}`);
-  });
-  // tailored suggestion based on top dims
-  const primary = top[0].k;
-  const suggestions = {
-    S: "네트워킹과 팀 활동에서 강점이 발휘됩니다. 리더·협업 역할을 고려하세요.",
-    C: "체계적 업무와 프로젝트 관리에 적합합니다. 디테일 기반 역할에 강합니다.",
-    E: "공감능력과 감정표현이 강점입니다. 상담·창작·대인관계 분야에서 유리합니다.",
-    M: "도전적 목표 설정에 강합니다. 멘토링/리더십으로 성장할 여지가 큽니다.",
-    V: "전략·기획·비전 설정에 적합합니다. 장기 프로젝트를 맡아보세요.",
-    A: "변화에 유연해서 스타트업·현장 업무에 적합합니다. 다양한 경험을 추구하세요.",
-    B: "균형감이 좋아 번아웃 예방에 강합니다. 워라밸을 유지하세요."
-  };
-  lines.push('');
-  lines.push(`추천: ${suggestions[primary] || ''}`);
-  return lines.join('\n');
-}
-
-/* main: calculate & show */
-function calculateAndShow(){
-  updateProgress();
-  if(!qcCheck()) return;
-  const profile = computeProfile(); // 1..7
   drawRadar(profile);
-  // convert profile to 0..100
-  const profilePercent = {};
-  dims.forEach(d=>{
-    profilePercent[d] = toPercentScale(profile[d]);
-  });
-  // distances
-  const results = computeDistances(profilePercent);
-  // display top 10
-  topArche.innerHTML = '<strong>Top 10 Archetypes</strong>';
-  results.slice(0,10).forEach((r, idx)=>{
-    const div = document.createElement('div');
-    div.className = 'archeItem';
-    div.innerHTML = `<div><strong>${idx+1}. ${r.id}</strong><div class="small">${r.desc}</div></div>
-                     <div style="text-align:right"><div style="font-weight:800">${r.sim}%</div><div class="small">dist ${r.dist.toFixed(2)}</div></div>`;
-    topArche.appendChild(div);
-  });
-  // pick top 3 for recommendations
-  const primary = results[0];
-  const secondary = results[1];
-  const tertiary = results[2];
-  // interpretation
-  const interpretation = generateInterpretation(profile);
-  interpretEl.innerText = interpretation;
-  // show result panel
-  resultOverview.style.display = 'block';
-  // show QC ok
-  qcMsg.innerText = '응답 검증 완료: 품질 양호';
-  qcMsg.className='small';
-  // store last result to localStorage for PDF export
-  localStorage.setItem('scemvab_last_result_v1', JSON.stringify({profile, results: results.slice(0,10), interpretation, ts: Date.now()}));
 }
 
-/* button handlers */
-document.getElementById('downloadReport').addEventListener('click', ()=> exportPDF());
-document.getElementById('exportPdf').addEventListener('click', ()=> exportPDF());
-document.getElementById('toggleInterpret').addEventListener('change',(e)=>{
-  interpretEl.style.display = e.target.checked ? 'block' : 'none';
-});
-
-/* export PDF using html2canvas + jsPDF */
-async function exportPDF(){
-  const last = localStorage.getItem('scemvab_last_result_v1');
-  if(!last) { alert('먼저 결과를 생성하세요.'); return; }
-  // render the resultOverview box to canvas (include chart canvas by drawing separately)
-  try{
-    // render radar canvas to image and embed in report wrapper
-    const blob = await html2canvas(document.getElementById('radar'), {backgroundColor:null, scale:2});
-    const imgData = blob.toDataURL('image/png');
-    // create a temporary element for report layout
-    const reportDiv = document.createElement('div');
-    reportDiv.style.width = '800px';
-    reportDiv.style.padding = '20px';
-    reportDiv.style.background = '#fff';
-    reportDiv.style.color = '#000';
-    const resObj = JSON.parse(last);
-    // build HTML summary
-    reportDiv.innerHTML = `<h2>SCEMVAB 검사 리포트</h2>
-      <p>생성일: ${new Date(resObj.ts).toLocaleString()}</p>
-      <div><strong>프로파일 (1–7)</strong></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        ${dims.map(d=>`<div style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px"><strong>${d}</strong><div>${resObj.profile[d]}</div></div>`).join('')}
-      </div>
-      <div style="margin-top:12px"><img src="${imgData}" style="width:100%;border:1px solid #ddd"/></div>
-      <div style="margin-top:12px"><strong>상위 Archetype</strong>
-        <ol>${resObj.results.map(r=>`<li>${r.id} (${r.desc}) — 유사도 ${r.sim}% (거리 ${r.dist.toFixed(2)})</li>`).join('')}</ol>
-      </div>
-      <div style="margin-top:12px"><strong>해석</strong><pre style="white-space:pre-wrap">${resObj.interpretation}</pre></div>
-    `;
-    document.body.appendChild(reportDiv);
-    // convert reportDiv to canvas
-    const canvas = await html2canvas(reportDiv, {scale:2});
-    const img = canvas.toDataURL('image/png');
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'portrait', unit:'px', format:[canvas.width, canvas.height] });
-    pdf.addImage(img, 'PNG', 0, 0, canvas.width, canvas.height);
-    pdf.save('SCEMVAB_report.pdf');
-    document.body.removeChild(reportDiv);
-  }catch(e){
-    console.error(e);
-    alert('PDF 생성 중 오류가 발생했습니다. 콘솔을 확인하세요.');
+function drawRadar(profile){
+  const svg = document.getElementById('rad');
+  svg.innerHTML = '';
+  const R = 100;
+  const N = axes.length;
+  
+  for(let ring=4; ring>=1; ring--){
+    const rr = R*ring/4;
+    const points = [];
+    for(let i=0;i<N;i++){
+      const ang = -Math.PI/2 + i*(2*Math.PI/N);
+      const x = rr*Math.cos(ang);
+      const y = rr*Math.sin(ang);
+      points.push(`${x},${y}`);
+    }
+    const poly = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+    poly.setAttribute("points",points.join(' '));
+    poly.setAttribute("fill","none");
+    poly.setAttribute("stroke","rgba(255,255,255,0.06)");
+    poly.setAttribute("stroke-width","1");
+    svg.appendChild(poly);
   }
+  
+  for(let i=0;i<N;i++){
+    const ang = -Math.PI/2 + i*(2*Math.PI/N);
+    const x = (R+16)*Math.cos(ang);
+    const y = (R+16)*Math.sin(ang);
+    const t = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.setAttribute("x",x);
+    t.setAttribute("y",y+4);
+    t.setAttribute("text-anchor","middle");
+    t.setAttribute("font-size","11");
+    t.setAttribute("fill","rgba(255,255,255,0.8)");
+    t.textContent = axes[i];
+    svg.appendChild(t);
+    const lx = R*Math.cos(ang);
+    const ly = R*Math.sin(ang);
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1","0");
+    line.setAttribute("y1","0");
+    line.setAttribute("x2",lx);
+    line.setAttribute("y2",ly);
+    line.setAttribute("stroke","rgba(255,255,255,0.03)");
+    svg.appendChild(line);
+  }
+  
+  const pts = [];
+  for(let i=0;i<N;i++){
+    const v = profile[i]/100;
+    const r = v*R;
+    const ang = -Math.PI/2 + i*(2*Math.PI/N);
+    const x = r*Math.cos(ang);
+    const y = r*Math.sin(ang);
+    pts.push(`${x},${y}`);
+  }
+  const poly = document.createElementNS("http://www.w3.org/2000/svg","polygon");
+  poly.setAttribute("points",pts.join(' '));
+  const defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
+  defs.innerHTML = `<linearGradient id="ggrad" x1="0" x2="1"><stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.24"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0.12"/></linearGradient>`;
+  svg.appendChild(defs);
+  poly.setAttribute("fill","url(#ggrad)");
+  poly.setAttribute("stroke","rgba(125,211,252,0.9)");
+  poly.setAttribute("stroke-width","2");
+  svg.appendChild(poly);
 }
 
-/* compute & show on demand (button as keyboard shortcut) */
-document.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ calculateAndShow(); } });
-/* Expose calculate button via dblclick on header */
-document.querySelector('.header h1').addEventListener('dblclick', ()=> calculateAndShow());
-
-/* initially update progress */
-updateProgress();
-
-/* Attach explicit calculate (we allow user keyboard Enter, header dblclick) */
-const calcBtn = document.createElement('button');
-calcBtn.className='btn';
-calcBtn.innerText='결과 보기';
-calcBtn.style.width='100%';
-calcBtn.style.marginTop='10px';
-calcBtn.addEventListener('click', calculateAndShow);
-document.querySelector('.left').appendChild(calcBtn);
-
-/* Additional: simple adaptive branching (very small demo)
-   If a dimension has extreme values (>=6 or <=2) in initial pass, we prompt 2 extra confirm items for that dim.
-   This is a lightweight mimic of adaptive testing; full IRT requires server/statistics.
-*/
-function runAdaptiveCheck(){
-  const profile = computeProfile();
-  const extremes = dims.filter(d=> profile[d] >=6 || profile[d] <=2);
-  if(extremes.length===0) return;
-  // append follow-up questions for the first extreme dim
-  const dim = extremes[0];
-  const follow = [
-    {id: 1000+Math.floor(Math.random()*1000), text:`(심화) 당신은 보통 ${dim} 관련 상황에서 같은 경향을 보이나요?`, dim:dim},
-    {id: 2000+Math.floor(Math.random()*1000), text:`(심화) 과거에도 ${dim} 성향이 비슷했나요?`, dim:dim}
-  ];
-  follow.forEach(f=>{
-    const div=document.createElement('div');
-    div.className='q';
-    div.innerHTML = `<div class="text"><strong>심화:</strong> ${f.text}</div>
-      <div class="scale">${[1,2,3,4,5,6,7].map(n=>`<input type="radio" name="q${f.id}" id="q${f.id}_${n}" value="${n}"><label for="q${f.id}_${n}">${n}</label>`).join('')}</div>`;
-    container.appendChild(div);
-  });
-  alert('심화 문항이 추가되었습니다. (변경사항은 자동저장됩니다.)');
-  updateProgress();
-}
-
-/* For demo: run adaptive after initial calculation */
-document.querySelector('.left').addEventListener('click', (e)=>{
-  // nothing
+document.getElementById('show').addEventListener('click',()=>{
+  const answers = readAnswers();
+  const missing = answers.reduce((acc,v)=>acc + (v===null?1:0),0);
+  if(missing>0){
+    if(!confirm(`미응답 ${missing}문항이 있습니다. 미응답은 자동으로 중립값(4)으로 처리됩니다. 계속하시겠습니까?`)){
+      return;
+    }
+  }
+  const filled = answers.map(v => v===null?4:v);
+  const profile = computeProfile(filled);
+  showProfile(profile);
+  document.getElementById('side').scrollIntoView({behavior:'smooth'});
 });
 
-/* expose global for debugging if needed */
-window._scemvab = {questions, archetypes, computeProfile, calculateAndShow};
+document.getElementById('reset').addEventListener('click',()=>{
+  if(!confirm('테스트를 초기화하고 처음부터 시작하시겠습니까?')) return;
+  for(let i=0;i<items.length;i++){
+    const radios = document.getElementsByName('q'+i);
+    for(const r of radios) r.checked = false;
+  }
+  axes.forEach(ax=>{
+    document.getElementById('lbl_'+ax).textContent='-';
+    document.getElementById('bar_'+ax).style.width='0%';
+  });
+  document.getElementById('archetypes').innerHTML = '<div class="small">대표 유형</div>';
+  document.getElementById('rad').innerHTML='';
+  updateProgress();
+});
 
-</script>
-</body>
-</html>
+document.getElementById('export').addEventListener('click',()=>{
+  const answers = readAnswers();
+  const missing = answers.reduce((acc,v)=>acc + (v===null?1:0),0);
+  if(missing > 50){
+    alert('검사를 충분히 완료한 후 결과를 저장할 수 있습니다.');
+    return;
+  }
+  const filled = answers.map(v => v===null?4:v);
+  const profile = computeProfile(filled);
+  
+  const result = {
+    date: new Date().toISOString(),
+    answers: filled,
+    profile: profile.map((v,i) => ({axis: axes[i], name: axisNames[axes[i]], score: v})),
+    archetypes: archetypes.map((a,i) => {
+      const dists = archetypes.map(arch => {
+        let s=0;
+        for(let j=0;j<7;j++){ const diff = profile[j]-arch.v[j]; s += diff*diff; }
+        return Math.sqrt(s);
+      });
+      const maxd = Math.max(...dists);
+      const simRaw = dists.map(d => Math.max(0, (maxd - d)));
+      const sumSim = simRaw.reduce((a,b)=>a+b,0) || 1;
+      const sims = simRaw.map(s => Math.round(s/sumSim*100));
+      return {id: a.id, desc: a.desc, similarity: sims[i]};
+    }).sort((x,y) => y.similarity - x.similarity).slice(0,5)
+  };
+  
+  const blob = new Blob([JSON.stringify(result, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `SCEMVAB_결과_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+updateProgress();
